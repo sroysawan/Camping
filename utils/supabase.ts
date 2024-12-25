@@ -12,7 +12,9 @@ export async function uploadFile(image: File) {
   const newName = `Landmark-${timeStamp}-${image.name}`;
   const { data, error } = await supabase.storage
     .from(bucket)
-    .upload(newName, image);
+    .upload(newName, image,{
+      cacheControl:'3600' // กำหนดค่า cache control เป็น 1 ชั่วโมง
+    });
 
   if (!data) throw new Error("Image Upload Failed");
   return supabase.storage.from(bucket).getPublicUrl(newName).data.publicUrl
