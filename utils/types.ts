@@ -14,3 +14,19 @@ export type LandmarkCardProps = {
   lat: number;
   lng: number;
 };
+
+export type ProfileProps = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  userName: string;
+  profileImage: string;
+};
+
+export type Latlng = [number, number]
+export type SearchParams = {
+  q: string;
+  format: "json";
+  addressdetails: number;
+  polygon_geojson: number;
+};
