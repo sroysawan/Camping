@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Button } from "../ui/button"
+import { Tent } from "lucide-react"
 
 const Logo = () => {
   return (
@@ -8,7 +9,7 @@ const Logo = () => {
         className="text-2xl"
         href='/'
       >
-        Logo
+        <Tent />
       </Link>
     </Button>
   )
