@@ -14,17 +14,19 @@ import { links } from "@/utils/links"
 
 import SignOutLinks from "./SignOutLinks"
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/nextjs'
+import { currentUser } from "@clerk/nextjs/server"
 
-const DropDownListMenu = () => {
+const DropDownListMenu = async() => {
+    const user = await currentUser()
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant='outline'>
                     <AlignLeft />
-                    <UserIcon />
+                    <UserIcon userImg={user?.imageUrl || ""} size="size-6"/>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent align='end'>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
 
@@ -52,8 +54,8 @@ const DropDownListMenu = () => {
                     {
                         links.map((item, index) => {
                             return (
-                                <DropdownMenuItem key={index}>
-                                    <Link href={item.href}>
+                                <DropdownMenuItem key={index} >
+                                    <Link href={item.href}  className="w-full">
                                         {item.label}
                                     </Link>
                                 </DropdownMenuItem>
