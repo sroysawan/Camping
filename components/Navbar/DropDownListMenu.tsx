@@ -23,7 +23,7 @@ const DropDownListMenu = async() => {
             <DropdownMenuTrigger asChild>
                 <Button variant='outline'>
                     <AlignLeft />
-                    <UserIcon userImg={user?.imageUrl || ""} size="size-6"/>
+                    <UserIcon userImg={user?.imageUrl} size="size-6"/>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align='end'>
