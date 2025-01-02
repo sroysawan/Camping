@@ -1,5 +1,5 @@
 'use client'
-import { LayersControl, MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet'
+import { LayersControl, MapContainer, Marker, Popup, TileLayer, Tooltip, useMap, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L, { LatLng, latLng } from 'leaflet'
 import { useEffect, useState } from 'react';
@@ -72,9 +72,7 @@ const MapLandmark = ({ location }: {
             >
 
                 <Marker position={mapCenter} icon={markerIcon}>
-                    <Popup>
-                        กรุงเทพมหานคร (Bangkok) <br /> เมืองหลวงของประเทศไทย
-                    </Popup>
+                <Tooltip>You are here</Tooltip>
                 </Marker>
 
                 <ResetCenterView position={position} setPosition={setPosition} />
