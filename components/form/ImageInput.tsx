@@ -1,7 +1,13 @@
 import { Label } from '@/components/ui/label'
 import { Input } from '../ui/input'
-const ImageInput = () => {
-    const name = 'image'
+
+type ImageProps = {
+    name: string
+    required: boolean
+}
+const ImageInput = (props:ImageProps) => {
+    // const name = 'image'
+    const { name, required } = props
     return (
         <div className='mb-2'>
             <Label className='capitalize'>
@@ -11,7 +17,7 @@ const ImageInput = () => {
                 id={name}
                 name={name}
                 type='file'
-                required
+                required={required}
                 accept='image/*'
             />
         </div>
