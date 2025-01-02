@@ -33,7 +33,7 @@ const Search = () => {
     <Input
       type="text"
       placeholder="Search Camping"
-      className="max-w-xs"
+      className="max-w-xs text-xs sm:text-base"
       onChange={(e)=>{
         setSearch(e.target.value)
         handleSearch(e.target.value)
