@@ -1,15 +1,14 @@
-import React from 'react'
+
 import { SubmitButton } from '@/components/form/Buttons'
 import FormContainer from '@/components/form/FormContainer'
 import FormInput from '@/components/form/FormInput'
 import { createLandmarkAction } from '@/actions/action'
-import { currentUser } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation'
 import CategoryInput from '@/components/form/CategoryInput'
 import TextAreaInput from '@/components/form/TextAreaInput'
 import ProvinceInput from '@/components/form/ProvinceInput'
 import MapLandmark from '@/components/map/MapLandmark'
 import ImageInput from '@/components/form/ImageInput'
+import MapLandmarkClient  from '@/components/camp/MapLandmarkClient'
 
 const CreateLandmark = async () => {
 
@@ -37,8 +36,9 @@ const CreateLandmark = async () => {
                         />
                         <ProvinceInput />
                     </div>
-                    <ImageInput/>
-                    <MapLandmark />
+                    <ImageInput name="image" required={true}/>
+                    <MapLandmarkClient />
+                    {/* <MapLandmark /> */}
                     <SubmitButton size='lg' text="Create Landmark" />
                 </FormContainer>
             </div>
