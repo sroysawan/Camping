@@ -7,7 +7,12 @@ import { actionFunction } from "@/utils/types"
 const initialState = {
     message: '',
 }
-const FormContainer = ({ action, children }: { action: actionFunction, children: React.ReactNode }) => {
+const FormContainer = ({ 
+    action, children 
+}: { 
+    action: actionFunction, 
+    children: React.ReactNode 
+}) => {
     const { toast } = useToast()
     const [state, formAction] = useActionState(action, initialState)
     // console.log("state", state.message)
