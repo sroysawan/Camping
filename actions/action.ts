@@ -67,11 +67,76 @@ export const createProfileAction = async (
   redirect("/");
 };
 
+export const fetchProfile = async () => {
+  const user = await getAuthUser();
+  const profile = await db.profile.findUnique({
+    where: {
+      clerkId: user.id,
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      userName: true,
+      profileImage: true,
+    },
+  });
+  return profile;
+};
+
+export const editProfileAction = async (prevState: any, formData: FormData) => {
+  console.log('prevState:', prevState.profileImage); 
+  console.log('formData:', formData); 
+  try {
+    // 1. ตรวจสอบว่า User กำลังล็อกอิน
+    const user = await currentUser();
+    if (!user) throw new Error("Please login");
+
+    // 2. ดึงไฟล์รูปภาพจาก FormData
+    const file = formData.get("profileImage") as File;
+
+    // 3. แปลงข้อมูลจาก FormData ให้เป็น Object และตรวจสอบความถูกต้องตาม Zod schema
+    const rawData = Object.fromEntries(formData);
+    const validateField = validatedWithZod(profileSchema, rawData);
+
+    // 4. อัปโหลดรูปภาพใหม่ไปยัง Clerk (ถ้ามีการเลือกไฟล์ใหม่)
+    let newProfileImageUrl = prevState.profileImage;
+    if (file && file.size > 0) {
+      const client = await clerkClient();
+      const response = await client.users.updateUserProfileImage(user.id, {
+        file,
+      });
+      // console.log('response', response);
+      newProfileImageUrl = response.imageUrl; // ได้ URL รูปใหม่จาก Clerk
+    }
+
+    await db.profile.update({
+      where: {
+        clerkId: user.id,
+      },
+      data: {
+        profileImage: newProfileImageUrl, // อัปเดต URL รูปภาพใหม่
+        ...validateField, // อัปเดตฟิลด์ที่ผ่านการตรวจสอบแล้ว เช่น ชื่อ นามสกุล
+      },
+    });
+
+    // return { message: "Profile updated successfully" };
+  } catch (error) {
+    // console.log(error);
+    return renderError(error);
+  }
+  redirect("/profile");
+};
+
+
+
 //create landmark insert to db
 export const createLandmarkAction = async (
   prevState: any,
   formData: FormData
 ): Promise<{ message: string }> => {
+  // console.log('prevState:', prevState); 
+  // console.log('formData:', formData); 
   try {
     const user = await getAuthUser();
     const rawData = Object.fromEntries(formData);
@@ -85,7 +150,7 @@ export const createLandmarkAction = async (
 
     //step 2: upload img to supabase
     const fullPath = await uploadFile(validatedFile.image);
-    console.log(fullPath);
+    // console.log(fullPath);
 
     //step 3: insert to db
     await db.landmark.create({
@@ -103,6 +168,72 @@ export const createLandmarkAction = async (
   // redirect("/");
 };
 
+export const editLandmarkAction = async (
+  prevState: any,
+  formData: FormData
+): Promise<{ message: string }> => {
+  // console.log('prevState:', prevState.image); 
+  // console.log('formData:', formData); 
+  try {
+    const user = await getAuthUser();
+    const rawData = Object.fromEntries(formData);
+    const landmarkId = formData.get("id") as string;
+    // console.log("validated landmark", formData.get("id"));
+
+    const file = formData.get("image") as File;
+
+    //step 1: validate data
+    const validatedFile = validatedWithZod(imageSchema, { image: file });
+    const validateField = validatedWithZod(landMarkSchema, rawData);
+    
+    //step 2: upload img to supabase
+    let fullPath = prevState.image;
+    if (file && file.size > 0) {
+      fullPath = await uploadFile(validatedFile.image); // Upload new image
+    }else if (!file && !prevState.image) {
+      // กรณีไม่มีการส่งไฟล์ใหม่และไม่พบค่าใน prevState.image
+      fullPath = ''; // หรือ URL เดิมจากฐานข้อมูลหากต้องการ
+    }
+    // console.log('fullPath', fullPath);
+
+    //step 3: insert to db
+    await db.landmark.update({
+      where:{
+        id: landmarkId
+      },
+      data: {
+        ...validateField,
+        image: fullPath,
+        profileId: user.id,
+      },
+    });
+    // return { message: "Updated Landmark Success" };
+  } catch (error) {
+    console.log(error);
+    return renderError(error);
+  }
+   redirect("/camp");
+};
+
+export const removeLandmarkAction = async({landmarkId,pathName}: {
+  landmarkId: string;
+  pathName: string;
+})=>{
+  try {
+    await db.landmark.delete({
+      where: {
+        id: landmarkId,
+      },
+    })
+    revalidatePath(pathName);
+    // return { message: "Remove Landmark Success!"  };
+  } catch (error) {
+    console.log(error)
+    return renderError(error);
+  }
+}
+
+//all
 export const featchLandmarks = async ({
   search = "",
   category,
@@ -113,6 +244,7 @@ export const featchLandmarks = async ({
   const landmarks = await db.landmark.findMany({
     where: {
       category,
+
       OR: [
         { name: { contains: search, mode: "insensitive" } },
         { description: { contains: search, mode: "insensitive" } },
@@ -126,12 +258,37 @@ export const featchLandmarks = async ({
   return landmarks;
 };
 
+//ทุกอันที่เราเป็นคนสร้าง
+export const featchLandmarksByCurrentUser = async () => {
+  const user = await getAuthUser();
+  const landmarks = await db.landmark.findMany({
+    where: {
+      profileId: user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+  return landmarks;
+};
+
+//for edit
+export const fetchLandmarkById = async ({ id }: { id: string }) => {
+  const user = await getAuthUser();
+  return db.landmark.findUnique({
+    where: {
+      id: id,
+      profileId: user.id,
+    },
+  });
+};
+
 export const featchLandmarksHero = async () => {
   const landmarks = await db.landmark.findMany({
     orderBy: {
       createdAt: "desc",
     },
-    take: 10
+    take: 10,
   });
   return landmarks;
 };
@@ -213,14 +370,13 @@ export const fetchFavorites = async () => {
   return favorites.map((favorite) => favorite.landmark);
 };
 
-
-export const fetchLandmarkDetail =async({id}:{id:string})=>{
+export const fetchLandmarkDetail = async ({ id }: { id: string }) => {
   return db.landmark.findUnique({
-    where:{
-      id:id
+    where: {
+      id: id,
     },
-    include:{
-      profile:true
-    }
-  })
-}
+    include: {
+      profile: true,
+    },
+  });
+};
