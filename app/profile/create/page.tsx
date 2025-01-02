@@ -1,4 +1,3 @@
-import React from 'react'
 import { SubmitButton } from '@/components/form/Buttons'
 import FormContainer from '@/components/form/FormContainer'
 import FormInput from '@/components/form/FormInput'
