@@ -6,7 +6,7 @@ import Search from "./Search"
 const Navbar = () => {
     return (
         <nav>
-            <div className="container flex flex-col sm:flex-row justify-between
+            <div className="container flex flex-row justify-between
             py-8 sm:items-center gap-4">
                 {/* logo */}
                 <Logo />
