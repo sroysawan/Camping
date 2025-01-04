@@ -22,7 +22,7 @@ const ProfilePage = async () => {
         <h1 className="text-4xl font-bold text-center mb-8">My Profile</h1>
       </header>
       <section className="container mx-auto p-6 max-w-3xl ">
-        <div className="grid sm: grid-cols-3 w-full mt-4">
+        <div className="grid sm:grid-cols-3 w-full mt-4">
           <div className="flex justify-center items-center mb-8">
             <div className="relative group">
               <UserIcon userImg={user?.imageUrl || ""} size="size-40" />
