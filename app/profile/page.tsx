@@ -1,6 +1,5 @@
 
 import { fetchProfile } from "@/actions/action";
-import Bredcrumbs from "@/components/landmark/Bredcrumbs";
 import UserIcon from "@/components/navbar/UserIcon";
 import { Button } from "@/components/ui/button";
 import { ProfileProps } from "@/utils/types";
