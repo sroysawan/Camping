@@ -65,7 +65,7 @@ const MapLandmark = ({ location }: {
             <input name="lng" value={position ? position[1] : defaultLocation[1]} type='hidden' />
             <SearchMap position={position} setPosition={setPosition} />
             <MapContainer
-                className='h-[50vh] rounded-lg z-0 relative mb-2'
+                className='h-[30vh] sm:h-[50vh] rounded-lg z-0 relative mb-2'
                 center={mapCenter}
                 zoom={7}
                 scrollWheelZoom={true}

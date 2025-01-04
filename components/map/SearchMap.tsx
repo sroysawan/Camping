@@ -1,15 +1,6 @@
 
 import { MapPin, Search, X } from "lucide-react"
-import { Button } from "../ui/button"
 import { Input } from "../ui/input"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
 import { useEffect, useState } from "react"
 import { Latlng, SearchParams } from "@/utils/types"
 import { useDebouncedCallback } from "use-debounce"
@@ -116,12 +107,13 @@ const SearchMap = ({
             )}
 
             {isSearchOpen && (
-                <div className="absolute -bottom-32 left-3 z-20 flex gap-2 bg-white p-2 rounded shadow-md">
+                <div className="absolute -bottom-32 left-3 z-20 flex gap-2 bg-white p-0.5 sm:p-2 text-xs sm:text-base rounded shadow-md">
                     <Input
                         type="text"
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
                         placeholder="Search location..."
+                        className="text-xs sm:text-base"
                         onKeyDown={(e) => {
                             if (e.key === "Enter") {
                                 e.preventDefault(); // ป้องกันการส่งฟอร์ม
@@ -142,7 +134,7 @@ const SearchMap = ({
 
             {/* รายการสถานที่ */}
             {isSearchOpen && listPlace.length > 0 && (
-                <div className="absolute top-32 left-3 right-4 z-20 w-1/2 bg-white border rounded shadow max-h-64 overflow-y-auto">
+                <div className="absolute top-32 left-3 right-4 z-20 w-full sm:w-1/2 bg-white border rounded shadow max-h-48 sm:max-h-64 overflow-y-auto">
                     {listPlace.map((item: any) => {
                         const lat = parseFloat(item?.lat);
                         const lon = parseFloat(item?.lon);
@@ -156,7 +148,7 @@ const SearchMap = ({
                                 }}
                             >
                                 <MapPin className="w-4 h-4 text-gray-500" />
-                                <span className="text-sm">{item?.display_name}</span>
+                                <span className="text-xs sm:text-sm">{item?.display_name}</span>
                             </div>
                         );
                     })}
